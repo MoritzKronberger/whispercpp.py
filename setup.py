@@ -1,12 +1,15 @@
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
-import numpy, os, sys
+import numpy, os, platform
 
-if sys.platform == 'darwin':
+if platform.platform() == 'Darwin':
     os.environ['CFLAGS']   = '-DGGML_USE_ACCELERATE -O3 -std=gnu11'
     os.environ['CXXFLAGS'] = '-DGGML_USE_ACCELERATE -O3 -std=c++11'
     os.environ['LDFLAGS']  = '-framework Accelerate'
+elif platform.processor() == 'aarch64':
+    os.environ['CFLAGS']   = '-O3 -std=gnu11'
+    os.environ['CXXFLAGS'] = '-O3 -std=c++11'
 else:
     os.environ['CFLAGS']   = '-mavx -mavx2 -mfma -mf16c -O3 -std=gnu11'
     os.environ['CXXFLAGS'] = '-mavx -mavx2 -mfma -mf16c -O3 -std=c++11'
